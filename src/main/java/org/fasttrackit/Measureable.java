@@ -1,54 +1,129 @@
 package org.fasttrackit;
 
-import javax.swing.border.TitledBorder;
+import javax.swing.*;
 import java.util.Scanner;
-import java.io.InputStream;
 
 public class Measureable {
-    public static final String TITLE = " = Measureable Application = ";
+    public static final String TITLE = "- = Measurable Application = -";
+
     public static final String METER = "m";
     public static final String CENTIMETER = "cm";
-    public static final String INCHES = "in";
+    public static final String INCH = "in";
     public static final String FOOT = "ft";
+
+    public static final String IMPERIAL_SYSTEM = "Imperial";
+    public static final String METER_SYSTEM = "Meter";
+    public static final double PI = 3.14;
+    public static final int ONE_HUNDRED = 100;
+    public static final String SQUARE_AREA = "Square Area";
+    public static final String CIRCLE_AREA = "Circle Area";
+    public static final String CUBE_VOLUME = "Cube Volume";
+    public static Scanner input;
 
     public static void main(String[] args) {
         System.out.println(TITLE);
-        Scanner input = new Scanner(System.in);
-        System.out.println("What International unit do you prefer ? :");
+
+        String selectedSystem = METER_SYSTEM;
+        String selectedUnit = METER;
+        String selectedSubUnit = CENTIMETER;
+
+        input = new Scanner(System.in);
+        System.out.println("What International scale unit you prefer ?");
+        System.out.println("i) " + IMPERIAL_SYSTEM);
+        System.out.println("m) " + METER_SYSTEM);
         String unit = input.nextLine();
-        System.out.println("you have chose : " +  unit  +  " system");
+        if (unit.equals("i")) {
+            selectedSystem = IMPERIAL_SYSTEM;
+            selectedUnit = FOOT;
+            selectedSubUnit = INCH;
+        }
+        System.out.println("You have chosen : " + selectedSystem + " system");
 
-        String side = askForTheSideOfSquare(input);
+        System.out.println("In what unit is your measurement ?");
+        System.out.println("1) " + selectedUnit);
+        System.out.println("2) " + selectedSubUnit);
+        String subUnitSelection = input.nextLine();
 
-        Double aria = calculateAria(side);
-        if (aria == null)
-            return;
-        System.out.println("The aria of a the square is : " + aria);
+        System.out.println("What would you like to calculate ?");
+        System.out.println("sa) " + SQUARE_AREA);
+        System.out.println("ca) " + CIRCLE_AREA);
+        System.out.println("cv) " + CUBE_VOLUME);
+        String selectedFormula = input.nextLine();
+
+        if (selectedFormula.equals("sa")) {
+            System.out.println("You have chosen " + SQUARE_AREA + " formula.");
+            String side = askForMeasurement("What is the side of the Square? : ");
+            Double area = calculateArea(side, selectedFormula);
+            if (area == null)
+                return;
+
+            area = transformInSubUnit(subUnitSelection, area);
+            System.out.println("The area of the square is : " + area + " " + selectedUnit + "².");
+        }
+        if (selectedFormula.equals("ca")) {
+            System.out.println("You have chosen " + CIRCLE_AREA + " formula.");
+            String inputAsRadius = askForMeasurement("What is the radius of the Circle? : ");
+            Double area = calculateArea(inputAsRadius, selectedFormula);
+            if (area == null)
+                return;
+            area *= PI;
+            area = transformInSubUnit(subUnitSelection, area);
+            System.out.println("The area of the circle is : " + area + " " + selectedUnit + "².");
+        }
+        if (selectedFormula.equals("cv")) {
+            System.out.println("You have chosen " + CUBE_VOLUME + " formula.");
+            String side = askForMeasurement("What is the side of the Cube? :");
+            Double area = calculateArea(side, selectedFormula);
+            if (area == null)
+                return;
+
+            area = transformInSubUnit(subUnitSelection, area);
+            System.out.println("The volume of cube is : " + area + " " + selectedUnit + ".");
 
 
+        }
     }
 
-    private static String askForTheSideOfSquare(Scanner input) {
-        System.out.print("What is the side of square ?  : ");
-        String s = input.nextLine();
-        return s;
+    private static Double transformInSubUnit(String subUnitSelection, Double area) {
+        if (subUnitSelection.equals("2")) {
+            area = area / (ONE_HUNDRED * ONE_HUNDRED);
+        }
+        return area;
     }
 
-    private static Double calculateAria(String s) {
-        double size;
+    private static String askForMeasurement(String textToPrintToUser) {
+        System.out.println(textToPrintToUser);
+        return input.nextLine();
+    }
+
+    private static Double calculateArea(String s, String selectedFormula) {
+        double number;
         try {
-             size = Double.parseDouble(s);
+            number = Double.parseDouble(s);
         } catch (NumberFormatException e) {
-            System.out.println("We can only measure using numbers. letters are not allowed");
+            System.out.println("We can only measure using numbers. Letters are not allowed.");
             return null;
         }
-        if (size < 0) {
-            System.out.println("We can't calculate area of a negative number! ");
+        if (number < 0) {
+            System.out.println("We can't calculate area of a negative number.");
             return null;
         }
-        double aria =  size * size;
-        return aria;
+        if (selectedFormula.equals("ca"))
+
+        return number * number * number;
+        else
+            return number * number;
     }
+
 }
-// CTRl + ALT + M -> extract function
-//What do we want to build in a
+
+
+// CTRL + ALT + M -> Extract Function / Extract Method ( same thing )
+// CTRL + ALT + L -> Reformat file !
+
+// What do we want to build in a measurable application ?
+// -> Measure the area of a Square
+// -> Measure the area of a Circle
+// -> Measure the Volume of a Cube
+
+
