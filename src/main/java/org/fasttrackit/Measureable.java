@@ -108,7 +108,7 @@ public class Measureable {
             System.out.println("We can't calculate area of a negative number.");
             return null;
         }
-        if (selectedFormula.equals("ca"))
+        if (selectedFormula.equals("cv"))
 
         return number * number * number;
         else
